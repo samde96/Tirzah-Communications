@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tirzah-backend
+    runtime: node
+    buildCommand: npm install && npm run server:build && npx prisma generate
+    startCommand: npm run server:start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false

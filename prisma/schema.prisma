@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PortfolioItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  category    String
+  mediaType   String   // 'image' or 'video'
+  mediaSrc    String   // URL or path to image
+  videoSrc    String?  // URL or path to video (if mediaType is video)
+  description String
+  link        String?
+  isActive    Boolean  @default(true)
+
+  // Detail page content
+  background  String?  // Background/context section
+  services    Json?    // Array of services offered [{title, description}]
+  achievements Json?   // Array of key achievements [{title, description}]
+  stats       Json?    // Stats object {visits, users}
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Client {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  logo      String   // URL or path to client logo
+  order     Int      @default(0) // For ordering clients on display
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  role         String
+  organization String
+  logo         String?  // URL or path to organization logo (optional)
+  quote        String
+  order        Int      @default(0) // For ordering testimonials on display
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
