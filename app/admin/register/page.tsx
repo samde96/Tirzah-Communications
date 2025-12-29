@@ -173,6 +173,11 @@ export default function AdminRegister() {
               <Link href="/admin/login" className="text-[#261592] hover:underline font-medium">
                 Sign in
               </Link>
+              <div className="mt-2">
+                <Link href="/admin/forgot-password" className="text-sm text-[#261592] hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
             </div>
           </form>
         </CardContent>
