@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { HeroHeader } from '@/components/header'
+import Footer from '@/components/footer';
 
 interface WorkItem {
     id: string
@@ -145,6 +146,7 @@ export default function PortfolioPage() {
                     )}
                 </div>
             </section>
+            <Footer />
         </>
     )
 }

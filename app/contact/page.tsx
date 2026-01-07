@@ -219,7 +219,7 @@ export default function ContactPage() {
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <h3 className="font-semibold mb-2">Email</h3>
-              <p className="text-muted-foreground">info@tirzah.com</p>
+              <p className="text-muted-foreground">info@tirzahcommunications.com</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Phone</h3>
