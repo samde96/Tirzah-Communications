@@ -10,10 +10,14 @@ const path_1 = __importDefault(require("path"));
 const getAllPortfolioItems = async (req, res) => {
     try {
         const { isActive } = req.query;
+        const key = `portfolio:all:isActive=${isActive ?? 'any'}`;
+        // const cached = await cacheGet<any[]>(key);
+        // if (cached) return res.json(cached);
         const items = await prisma_1.prisma.portfolioItem.findMany({
             where: isActive !== undefined ? { isActive: isActive === 'true' } : {},
             orderBy: { createdAt: 'desc' },
         });
+        // await cacheSet(key, items, 300);
         res.json(items);
     }
     catch (error) {
@@ -87,6 +91,8 @@ const createPortfolioItem = async (req, res) => {
             },
         });
         res.status(201).json(item);
+        // invalidate list caches
+        // await cacheDelByPattern('portfolio:all:*');
     }
     catch (error) {
         console.error('Create portfolio item error:', error);
@@ -169,6 +175,8 @@ const updatePortfolioItem = async (req, res) => {
             data: updateData,
         });
         console.log('Update successful:', item);
+        // invalidate caches
+        // await cacheDelByPattern('portfolio:all:*');
         res.json(item);
     }
     catch (error) {
@@ -205,6 +213,8 @@ const deletePortfolioItem = async (req, res) => {
         await prisma_1.prisma.portfolioItem.delete({
             where: { id },
         });
+        // invalidate caches
+        // await cacheDelByPattern('portfolio:all:*');
         res.json({ message: 'Portfolio item deleted successfully' });
     }
     catch (error) {

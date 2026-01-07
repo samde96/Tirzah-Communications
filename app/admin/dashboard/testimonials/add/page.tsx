@@ -42,7 +42,7 @@ export default function AddTestimonialPage() {
                 formDataToSend.append('logo', logo)
             }
 
-            const response = await fetch('https://trizah-communications.onrender.com/api/testimonials', {
+            const response = await fetch('https://tirzahcommunications.com/api/testimonials', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

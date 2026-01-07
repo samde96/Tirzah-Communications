@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = exports.register = exports.login = void 0;
+exports.resetPassword = exports.forgotPassword = exports.verifyToken = exports.register = exports.login = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma_1 = require("../utils/prisma");
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -101,3 +102,62 @@ const verifyToken = async (req, res) => {
     }
 };
 exports.verifyToken = verifyToken;
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ error: 'Email is required' });
+        const admin = await prisma_1.prisma.admin.findUnique({ where: { email } });
+        if (!admin)
+            return res.status(200).json({ message: 'If that email exists, a reset link was sent' });
+        const token = jsonwebtoken_1.default.sign({ adminId: admin.id, type: 'reset' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const frontendUrl = process.env.NEXT_PUBLIC_API_URL || process.env.FRONTEND_URL || 'http://localhost:3000';
+        const resetLink = `${frontendUrl.replace(/\/$/, '')}/admin/reset-password?token=${token}`;
+        const transporter = nodemailer_1.default.createTransport({
+            service: process.env.EMAIL_SERVICE || 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+        });
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: admin.email,
+            subject: 'Password reset for your admin account',
+            html: `
+        <p>Hello ${admin.name || ''},</p>
+        <p>You requested a password reset. Click the link below to set a new password. This link expires in 1 hour.</p>
+        <p><a href="${resetLink}">Reset your password</a></p>
+        <p>If you did not request this, please ignore this email.</p>
+      `,
+        };
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ message: 'If that email exists, a reset link was sent' });
+    }
+    catch (error) {
+        console.error('Forgot password error:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+exports.forgotPassword = forgotPassword;
+const resetPassword = async (req, res) => {
+    try {
+        const { token, password } = req.body;
+        if (!token || !password)
+            return res.status(400).json({ error: 'Token and new password are required' });
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        if (!decoded || decoded.type !== 'reset')
+            return res.status(403).json({ error: 'Invalid or expired token' });
+        const admin = await prisma_1.prisma.admin.findUnique({ where: { id: decoded.adminId } });
+        if (!admin)
+            return res.status(404).json({ error: 'Admin not found' });
+        const hashed = await bcryptjs_1.default.hash(password, 10);
+        await prisma_1.prisma.admin.update({ where: { id: admin.id }, data: { password: hashed } });
+        return res.status(200).json({ message: 'Password updated successfully' });
+    }
+    catch (error) {
+        console.error('Reset password error:', error);
+        return res.status(403).json({ error: 'Invalid or expired token' });
+    }
+};
+exports.resetPassword = resetPassword;

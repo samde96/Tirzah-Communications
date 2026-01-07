@@ -20,7 +20,6 @@ const PORT = process.env.PORT || 5000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-// Create uploads directory if it doesn't exist
 const uploadsDir = path_1.default.join(__dirname, '../../public/uploads');
 if (!fs_1.default.existsSync(uploadsDir)) {
     fs_1.default.mkdirSync(uploadsDir, { recursive: true });
@@ -33,7 +32,6 @@ app.use('/api/portfolio', portfolioRoutes_1.default);
 app.use('/api/contact', contactRoutes_1.default);
 app.use('/api/clients', clientRoutes_1.default);
 app.use('/api/testimonials', testimonialRoutes_1.default);
-// Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server is running' });
 });
@@ -45,5 +43,5 @@ app.use((err, req, res, next) => {
     });
 });
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port:${PORT}`);
 });

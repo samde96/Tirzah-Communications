@@ -47,7 +47,7 @@ export default function AddClientPage() {
 
             // change this to live url when deploying
             
-            const response = await fetch('http://localhost:5000/api/clients', {
+            const response = await fetch('https://tirzahcommunications.com/api/clients', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

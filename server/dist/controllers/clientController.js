@@ -8,6 +8,7 @@ const client_1 = require("@prisma/client");
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+// import { cacheGet, cacheSet, cacheDelByPattern } from '../utils/cache';
 const prisma = new client_1.PrismaClient();
 // Configure multer for logo uploads
 const storage = multer_1.default.diskStorage({
@@ -41,10 +42,14 @@ exports.upload = (0, multer_1.default)({
 // Get all clients
 const getAllClients = async (req, res) => {
     try {
+        const key = 'clients:all';
+        // const cached = await cacheGet<any[]>(key);
+        // if (cached) return res.json(cached);
         const clients = await prisma.client.findMany({
             where: { isActive: true },
             orderBy: { order: 'asc' }
         });
+        // await cacheSet(key, clients, 300);
         res.json(clients);
     }
     catch (error) {
@@ -92,6 +97,7 @@ const createClient = async (req, res) => {
             }
         });
         res.status(201).json(client);
+        // await cacheDelByPattern('clients:*');
     }
     catch (error) {
         console.error('Error creating client:', error);
@@ -128,6 +134,7 @@ const updateClient = async (req, res) => {
             where: { id },
             data: updateData
         });
+        // await cacheDelByPattern('clients:*');
         res.json(updatedClient);
     }
     catch (error) {
@@ -154,6 +161,7 @@ const deleteClient = async (req, res) => {
         await prisma.client.delete({
             where: { id }
         });
+        // await cacheDelByPattern('clients:*');
         res.json({ message: 'Client deleted successfully' });
     }
     catch (error) {

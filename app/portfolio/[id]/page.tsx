@@ -218,18 +218,18 @@ export default function PortfolioDetailPage() {
                             )}
 
                             {/* CTA Buttons */}
-                            <div className="flex gap-4 pt-6">
+                            <div className="flex gap-4 pt-6  p-6 rounded-lg text-white">
                                 <Button
                                     onClick={() => router.push('/portfolio')}
                                     variant="outline"
-                                    className="flex-1"
+                                    className="flex-1 bg-[#261592]"
                                 >
-                                    View to portfolio
+                                    View Portfolio
                                 </Button>
                                 <CalendlyButton
-                                    buttonText="Grab a coffee"
+                                    buttonText="Schedule Call"
                                     buttonClassName="flex-1"
-                                    buttonStyle={{ backgroundColor: '#1f89ca' }}
+                                    buttonStyle={{ backgroundColor: '#016bfe' }}
                                 />
                             </div>
                         </div>

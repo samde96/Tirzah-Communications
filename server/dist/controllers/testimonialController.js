@@ -9,6 +9,7 @@ const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const prisma = new client_1.PrismaClient();
+// import { cacheGet, cacheSet, cacheDelByPattern } from '../utils/cache';
 // Configure multer for logo uploads
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
@@ -41,10 +42,14 @@ exports.upload = (0, multer_1.default)({
 // Get all testimonials
 const getAllTestimonials = async (req, res) => {
     try {
+        const key = 'testimonials:all';
+        // const cached = await cacheGet<any[]>(key);
+        // if (cached) return res.json(cached);
         const testimonials = await prisma.testimonial.findMany({
             where: { isActive: true },
             orderBy: { order: 'asc' }
         });
+        // await cacheSet(key, testimonials, 300);
         res.json(testimonials);
     }
     catch (error) {
@@ -92,6 +97,7 @@ const createTestimonial = async (req, res) => {
             }
         });
         res.status(201).json(testimonial);
+        // await cacheDelByPattern('testimonials:*');
     }
     catch (error) {
         console.error('Error creating testimonial:', error);
@@ -133,6 +139,7 @@ const updateTestimonial = async (req, res) => {
             where: { id },
             data: updateData
         });
+        // await cacheDelByPattern('testimonials:*');
         res.json(updatedTestimonial);
     }
     catch (error) {
@@ -161,6 +168,7 @@ const deleteTestimonial = async (req, res) => {
         await prisma.testimonial.delete({
             where: { id }
         });
+        // await cacheDelByPattern('testimonials:*');
         res.json({ message: 'Testimonial deleted successfully' });
     }
     catch (error) {
