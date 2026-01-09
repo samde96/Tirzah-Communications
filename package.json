@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint",
     "server": "nodemon",
     "loadtest": "npx artillery run artillery/loadtest.yml",
     "server:build": "tsc -p server/tsconfig.json",
-    "server:start": "NODE_ENV=production node server/dist/index.js",
+    "server:start": "node server/dist/index.js",
     "create-admin": "ts-node server/src/scripts/createAdmin.ts"
   },
   "dependencies": {
