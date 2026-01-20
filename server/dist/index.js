@@ -13,7 +13,7 @@ const portfolioRoutes_1 = __importDefault(require("./routes/portfolioRoutes"));
 const contactRoutes_1 = __importDefault(require("./routes/contactRoutes"));
 const clientRoutes_1 = __importDefault(require("./routes/clientRoutes"));
 const testimonialRoutes_1 = __importDefault(require("./routes/testimonialRoutes"));
-dotenv_1.default.config();
+dotenv_1.default.config({ quiet: true });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 // Middleware
